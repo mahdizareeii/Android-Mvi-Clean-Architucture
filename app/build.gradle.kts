@@ -1,12 +1,18 @@
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    kotlin("kapt")
+    id(libs.plugins.dagger.hilt.android.plugin.get().pluginId)
 }
 
 dependencies {
     implementation(project(":features:home"))
     implementation(project(":primary:core"))
     implementation(project(":primary:domain"))
+    //hilt
+    implementation(libs.com.google.dagger.hilt.android)
+    kapt(libs.com.google.dagger.hilt.compiler)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
@@ -33,4 +39,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

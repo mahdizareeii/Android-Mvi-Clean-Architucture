@@ -1,5 +1,5 @@
 [versions]
-koin_version = "3.2.0"
+hilt_version = "2.38.1"
 plugin_android_version = "7.2.1"
 plugin_kotlin_version = "1.7.10"
 kotlinx_coroutines_version = "1.6.1"
@@ -36,11 +36,6 @@ androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmode
 androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycle_version" }
 android-material = { module = "com.google.android.material:material", version.ref = "material_version" }
 
-#koin
-koin-kotlin-core = { module = "io.insert-koin:koin-core", version.ref = "koin_version" }
-koin-kotlin-android = { module = "io.insert-koin:koin-android", version.ref = "koin_version" }
-koin-kotlin-test = { module = "io.insert-koin:koin-test", version.ref = "koin_version" }
-
 #coroutines
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx_coroutines_version" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx_coroutines_version" }
@@ -56,6 +51,11 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "a
 androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso_version" }
 io-coil = { module = "io.coil-kt:coil-compose", version.ref = "coil_version" }
 
+#hilt
+com-google-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt_version" }
+com-google-dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt_version" }
+com-google-dagger-hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt_version" }
+
 #others
 junit = { module = "junit:junit", version.ref = "junit_version" }
 org-mockito-core = { module = "org.mockito:mockito-core", version.ref = "mock_version" }
@@ -66,6 +66,7 @@ org-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "moc
 
 
 [plugins]
-com_android_application = { id = "com.android.application", version.ref = "plugin_android_version" }
-com_android_library = { id = "com.android.library", version.ref = "plugin_android_version" }
-org_jetbrains_kotlin_android = { id = "org.jetbrains.kotlin.android", version.ref = "plugin_kotlin_version" }
+com-android-application = { id = "com.android.application", version.ref = "plugin_android_version" }
+com-android-library = { id = "com.android.library", version.ref = "plugin_android_version" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "plugin_kotlin_version" }
+dagger-hilt-android-plugin = { id = "dagger.hilt.android.plugin" }

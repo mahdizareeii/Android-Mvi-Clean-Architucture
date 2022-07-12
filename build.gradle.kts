@@ -7,6 +7,12 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android) apply false
 }
 
+buildscript {
+    dependencies {
+        classpath(libs.com.google.dagger.hilt.android.gradle.plugin)
+    }
+}
+
 tasks {
     register("clean", Delete::class) {
         delete(rootProject.buildDir)
