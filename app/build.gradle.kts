@@ -40,14 +40,15 @@ android {
     }
 }
 
+subprojects {
+    project.plugins.applyBaseConfig(project)
+}
+
 fun BaseExtension.baseConfig() {
-
     compileSdkVersion(32)
-
     defaultConfig.apply {
         minSdk = 21
         targetSdk = 32
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -93,8 +94,4 @@ fun PluginContainer.applyBaseConfig(project: Project) {
             }
         }
     }
-}
-
-subprojects {
-    project.plugins.applyBaseConfig(project)
 }
