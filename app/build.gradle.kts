@@ -4,6 +4,9 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":features:home"))
+    implementation(project(":primary:core"))
+    implementation(project(":primary:domain"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)

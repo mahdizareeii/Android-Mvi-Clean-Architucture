@@ -15,6 +15,7 @@ dependencyResolutionManagement {
 rootProject.name = "Mvi"
 enableFeaturePreview("VERSION_CATALOGS")
 include ':app'
-include ':domain'
-include ':data'
-include ':core'
+include ':primary:domain'
+include ':primary:data'
+include ':primary:core'
+include ':features:home'
