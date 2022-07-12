@@ -12,6 +12,9 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Mvi Clean Architucture Sample"
+rootProject.name = "Mvi"
 enableFeaturePreview("VERSION_CATALOGS")
 include ':app'
+include ':app:domain'
+include ':app:data'
+include ':app:core'
