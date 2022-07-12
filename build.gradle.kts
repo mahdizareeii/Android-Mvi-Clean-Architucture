@@ -6,6 +6,7 @@ buildscript {
         classpath(libs.plugin.android)
         classpath(libs.plugin.kotlin)
         classpath(libs.com.google.dagger.hilt.android.gradle.plugin)
+        classpath(kotlin("serialization", libs.versions.plugin.kotlin.version.get()))
     }
 }
 plugins {

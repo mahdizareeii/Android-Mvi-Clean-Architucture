@@ -74,3 +74,4 @@ com-android-application = { id = "com.android.application", version.ref = "plugi
 com-android-library = { id = "com.android.library", version.ref = "plugin_android_version" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "plugin_kotlin_version" }
 dagger-hilt-android-plugin = { id = "dagger.hilt.android.plugin" }
+serialization = { id = "plugin.serialization" }
