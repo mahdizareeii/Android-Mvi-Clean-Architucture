@@ -1,16 +1,17 @@
 import com.android.build.gradle.*
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    dependencies {
+        classpath(libs.plugin.android)
+        classpath(libs.plugin.kotlin)
+        classpath(libs.com.google.dagger.hilt.android.gradle.plugin)
+    }
+}
 plugins {
     alias(libs.plugins.com.android.application) apply false
     alias(libs.plugins.com.android.library) apply false
     alias(libs.plugins.org.jetbrains.kotlin.android) apply false
-}
-
-buildscript {
-    dependencies {
-        classpath(libs.com.google.dagger.hilt.android.gradle.plugin)
-    }
 }
 
 tasks {
@@ -36,6 +37,8 @@ fun BaseExtension.baseConfig() {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    buildFeatures.compose = true
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
