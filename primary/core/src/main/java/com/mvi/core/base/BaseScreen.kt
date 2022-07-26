@@ -1,5 +1,6 @@
 package com.mvi.core.base
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -13,11 +14,12 @@ abstract class BaseScreen {
 
     protected lateinit var navController: NavHostController
 
-    protected val context = navController.context
+    protected lateinit var context: Context
 
     @Composable
     open fun createScreen(navController: NavHostController) {
         this.navController = navController
+        this.context = navController.context
         listenToComposableLifecycle(
             onEvent = { lifecycleOwner, event ->
                 when (event) {
