@@ -33,12 +33,10 @@ public class ApkMakerService extends IntentService {
      */
     public static final String APP_PACKAGE_NAME = "com.theaetetuslabs.helloworld";
 
-    //For use with the IntentService(String name) constructor.  Important for debugging only.
-    public static final String SERVICE_NAME = "com.theaetetuslabs.apkmakertester.ApkMakerService";
     public static final String TAG = "ApkMakerService";
 
     public ApkMakerService() {
-        super(SERVICE_NAME);
+        super(TAG);
     }
 
     @Override

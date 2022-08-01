@@ -18,6 +18,7 @@ package com.theaetetuslabs.android_apkmaker;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 
 import com.theaetetuslabs.java_apkmaker.Logger;
 
@@ -43,7 +44,8 @@ public class BuildFiles {
         return dir;
     }
     BuildFiles(Context context){
-        extFileDir = context.getExternalFilesDir(null);
+        //extFileDir = context.getExternalFilesDir(null);
+        extFileDir = context.getFilesDir();
         extApk = new File(extFileDir, "extApk.apk");
         filesDir = context.getFilesDir();
         buildDir = initDir(filesDir, "buildStuff");

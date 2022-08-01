@@ -16,6 +16,7 @@
 
 package com.theaetetuslabs.java_apkmaker;
 
+import com.android.sdklib.build.ApkBuilder;
 import com.android.sdklib.build.ApkCreationException;
 import com.android.sdklib.build.DuplicateFileException;
 import com.android.sdklib.build.SealedApkException;
@@ -114,7 +115,7 @@ public class ApkMaker {
         logd( "Building Apk", verbose);
 
         try {
-            com.android.sdklib.build.ApkBuilder apkBuilder = new com.android.sdklib.build.ApkBuilder(apkUnsigned, resourcesArsc, classesDex, null, out);
+            ApkBuilder apkBuilder = new ApkBuilder(apkUnsigned, resourcesArsc, classesDex, null, out);
             if(assetsDir!=null) {
                 File[] assetFiles = assetsDir.listFiles();
                 for (File assetFile : assetFiles) {
