@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="Mvi.android_apkmaker" target="11" />
+      <module name="Mvi.app" target="11" />
+      <module name="Mvi.appmaker.android_apkmaker" target="11" />
+      <module name="Mvi.features.home" target="11" />
+      <module name="Mvi.primary.core" target="11" />
+      <module name="Mvi.primary.data" target="11" />
+      <module name="Mvi.primary.domain" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

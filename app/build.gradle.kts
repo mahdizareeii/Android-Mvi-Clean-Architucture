@@ -7,6 +7,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":appmaker:android_apkmaker"))
     implementation(project(":features:home"))
     implementation(project(":primary:core"))
     implementation(project(":primary:domain"))

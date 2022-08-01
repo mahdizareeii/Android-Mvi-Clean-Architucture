@@ -19,7 +19,7 @@ class HomeScreen @Inject constructor() : BaseScreen() {
     override fun onScreenCreated() {
         val homeViewModel = hiltViewModel<HomeViewModel>()
         homeViewModel.showToast.value?.let {
-            Toast.makeText(getContext(), it, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
 
         Column(
