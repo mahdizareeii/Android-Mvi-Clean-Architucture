@@ -34,6 +34,7 @@ import androidx.core.app.NotificationCompat;
 import com.theaetetuslabs.java_apkmaker.ApkMaker.ApkMakerOptions;
 import com.theaetetuslabs.java_apkmaker.ApkMaker.Callbacks;
 import com.theaetetuslabs.java_apkmaker.Logger;
+import com.theaetetuslabs.java_apkmaker.Main;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -215,7 +216,7 @@ public class AndroidApkMaker {
                 return false;
             }
         };*/
-        com.theaetetuslabs.java_apkmaker.Main.main(options, null, null, new Callbacks() {
+        Main.main(options, null, null, new Callbacks() {
             @Override
             public void updateProgress(String msg, float percent) {
                 if (percent == -1) {
