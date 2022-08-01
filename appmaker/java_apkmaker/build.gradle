@@ -6,7 +6,7 @@ group="com.github.theaetetus"
 mainClassName = "com.theaetetuslabs.java_apkmaker.Main"
 
 dependencies {
-    implementation group: 'org.eclipse.jdt.core.compiler', name: 'ecj', version: '4.5.1'
+    implementation group: 'org.eclipse.jdt.core.compiler', name: 'ecj', version: '4.6.1'
     implementation group: 'com.google.android.tools', name: 'dx', version: '1.7'
     
 }

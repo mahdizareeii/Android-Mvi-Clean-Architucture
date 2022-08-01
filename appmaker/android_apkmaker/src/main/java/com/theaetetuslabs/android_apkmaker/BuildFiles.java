@@ -44,8 +44,7 @@ public class BuildFiles {
         return dir;
     }
     BuildFiles(Context context){
-        //extFileDir = context.getExternalFilesDir(null);
-        extFileDir = context.getFilesDir();
+        extFileDir = context.getExternalFilesDir(null);
         extApk = new File(extFileDir, "extApk.apk");
         filesDir = context.getFilesDir();
         buildDir = initDir(filesDir, "buildStuff");

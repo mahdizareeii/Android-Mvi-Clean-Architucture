@@ -40,17 +40,20 @@ public class ApkMaker {
     boolean verbose;
     PrintStream out = System.out;
     PrintStream err = System.err;
-    public ApkMaker(ApkMakerOptions options, ProjectFiles projectFiles, PrintStream out, PrintStream err){
+
+    public ApkMaker(ApkMakerOptions options, ProjectFiles projectFiles, PrintStream out, PrintStream err) {
         this(options, projectFiles);
         this.out = out;
         this.err = err;
     }
-    public ApkMaker(ApkMakerOptions options, ProjectFiles projectFiles){
+
+    public ApkMaker(ApkMakerOptions options, ProjectFiles projectFiles) {
         this.options = options;
         this.projectFiles = projectFiles;
         //verbose = options.verbose;
         verbose = true;//I don't know why, but without the debug statements, the program fails.
     }
+
     public void makeApk(Callbacks callbacks) {
         //needed directories;
         File temp = new File(projectFiles.outputDir, projectFiles.apkName + "_tmp");
@@ -65,7 +68,7 @@ public class ApkMaker {
 
         //Files passed in
         //File aapt = options.aapt == null ? null : new File(options.aapt);
-        if(options.aaptRunner==null){
+        if (options.aaptRunner == null) {
             options.aaptRunner = new AaptRunner() {
                 @Override
                 public boolean runAapt(File androidManifest, File resourcesArsc, File androidJar, File resDir, File genDir, Callbacks callbacks) {
@@ -78,8 +81,8 @@ public class ApkMaker {
                             " -S " + resDir.getAbsolutePath() +
                             " -J " + genDir.getAbsolutePath();  //where to put R.java
                     //exec(aaptCommand, callbacks, totAaptLines, "Running aapt");
-                    int val= exec(aaptCommand);
-                    return val==0;
+                    int val = exec(aaptCommand);
+                    return val == 0;
                 }
             };
         }
@@ -112,11 +115,11 @@ public class ApkMaker {
         }
 
         //Use sdklib to build apk.
-        logd( "Building Apk", verbose);
+        logd("Building Apk", verbose);
 
         try {
             ApkBuilder apkBuilder = new ApkBuilder(apkUnsigned, resourcesArsc, classesDex, null, out);
-            if(assetsDir!=null) {
+            if (assetsDir != null) {
                 File[] assetFiles = assetsDir.listFiles();
                 for (File assetFile : assetFiles) {
                     apkBuilder.addFile(assetFile, "assets/" + assetFile.getName());
@@ -133,7 +136,7 @@ public class ApkMaker {
 
 
         //cleanup
-        logd( "cleaning up", verbose);
+        logd("cleaning up", verbose);
         if (!apkUnsigned.exists()) {
             callbacks.error("Unable to build apk.");
             deleteRecursive(temp);
@@ -173,12 +176,12 @@ public class ApkMaker {
                 srcDir.getAbsolutePath()
         };
 
-        logd( "Compiling", verbose);
+        logd("Compiling", verbose);
         boolean systemExitWhenFinished = false;//
         org.eclipse.jdt.internal.compiler.batch.Main compiler = new org.eclipse.jdt.internal.compiler.batch.Main(new PrintWriter(out), new PrintWriter(err), systemExitWhenFinished, null, null);
         if (compiler.compile(compilerArgs)) {
-            logd( "Compile Success", verbose);
-        }else{
+            logd("Compile Success", verbose);
+        } else {
             logd("Compile Error", verbose);
         }
 
@@ -191,14 +194,11 @@ public class ApkMaker {
         String[] dexArgs = //"java -cp " + dx.getAbsolutePath() + "com.android.dx.command.dexer.Main" +
                 {"--output", classesDex.getAbsolutePath(),
                         classesDir.getAbsolutePath()};
-        logd( "Dexing", verbose);
+        logd("Dexing", verbose);
         com.android.dx.command.dexer.Main.main(dexArgs);
 
     }
 
-
-
-    
 
     //StackOverflow: http://codereview.stackexchange.com/questions/8835/java-most-compact-way-to-print-inputstream-to-system-out
     public long copyStream(InputStream is, OutputStream os) {
@@ -219,7 +219,7 @@ public class ApkMaker {
     }
 
     private void readStream(String msg, InputStream stream) throws IOException {
-        if(verbose) {
+        if (verbose) {
             out.append(msg);
             copyStream(stream, out);
         }
@@ -228,7 +228,7 @@ public class ApkMaker {
     int iPercent = 0;
 
     private void readStream(String msg, InputStream stream, Callbacks callbacks, int totalLines, String text) throws IOException {
-        if(verbose) {
+        if (verbose) {
             out.println(msg);
         }
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -239,7 +239,7 @@ public class ApkMaker {
         try {
             do {
                 line = reader.readLine();
-                if(verbose) {
+                if (verbose) {
                     out.println(line);
                 }
                 lineCt++;
@@ -263,7 +263,7 @@ public class ApkMaker {
     }
 
     private void readStreams(Process pp, String name) {
-        if(verbose) {
+        if (verbose) {
             try {
                 readStream("------InputStream, " + name + "\n", pp.getInputStream());
                 readStream("------ErrorStream, " + name + "\n", pp.getErrorStream());
@@ -277,19 +277,19 @@ public class ApkMaker {
     }
 
     private void readStreams(Process pp, String name, Callbacks callbacks, int totalLines, String text) {
-            try {
-                readStream("------InputStream, " + name + "\n", pp.getInputStream(), callbacks, totalLines, text);
-                readStream("------ErrorStream, " + name + "\n", pp.getErrorStream());
-                pp.waitFor();
-            } catch (IOException e) {
-                trace(e);
-            } catch (InterruptedException e) {
-                trace(e);
-            }
+        try {
+            readStream("------InputStream, " + name + "\n", pp.getInputStream(), callbacks, totalLines, text);
+            readStream("------ErrorStream, " + name + "\n", pp.getErrorStream());
+            pp.waitFor();
+        } catch (IOException e) {
+            trace(e);
+        } catch (InterruptedException e) {
+            trace(e);
+        }
     }
 
     public int exec(String command) {
-        logd( "exec: " + command, verbose);
+        logd("exec: " + command, verbose);
         try {
             Process pp = Runtime.getRuntime().exec(command);
             readStreams(pp, command);
@@ -301,7 +301,7 @@ public class ApkMaker {
     }
 
     private void exec(String command, Callbacks callbacks, int totalLines, String text) {
-        logd( "exec: " + text + command, verbose);
+        logd("exec: " + text + command, verbose);
         try {
             Process pp = Runtime.getRuntime().exec(command);
             readStreams(pp, command, callbacks, totalLines, text);
@@ -318,19 +318,21 @@ public class ApkMaker {
         return f;
     }
 
-    private void deleteRecursive(File file){
-        if(file.isDirectory()){
-            for(File f : file.listFiles()){
+    private void deleteRecursive(File file) {
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
                 deleteRecursive(f);
             }
-        }else{
+        } else {
             file.delete();
         }
     }
-    void trace(Exception e){
+
+    void trace(Exception e) {
         Logger.trace(e, err);
     }
-    void logd(String msg, boolean verbose){
+
+    void logd(String msg, boolean verbose) {
         Logger.logd(msg, verbose, out);
     }
 
@@ -343,29 +345,32 @@ public class ApkMaker {
         void done(File apk);
     }
 
-    public static class ApkMakerOptions{
+    public static class ApkMakerOptions {
         public String aapt = "aapt";
         public AaptRunner aaptRunner;
-        public String androidJar ="android.jar";
+        public String androidJar = "android.jar";
         public String projectDir;
         public String outputFile;
         public boolean verbose = false;
+
         {
-            if(File.separator.equals("/")){
+            if (File.separator.equals("/")) {
                 outputFile = "~/com.theaetetuslabs.apkmaker/newapk.apk";
-            }else{
+            } else {
                 outputFile = "%UserProfile%\\com.theaetetuslabs.apkmaker\\newapk.apk";
             }
         }
+
         void verifyOne(String path, String which) throws FileNotFoundException {
-            if(!new File(path).exists()){
+            if (!new File(path).exists()) {
                 throw new FileNotFoundException("Listed " + which + ", " + path + " not found");
             }
         }
+
         void verifyAll() throws FileNotFoundException {
             verifyOne(projectDir, "project directory");
             verifyOne(androidJar, "android.jar");
-            if(aaptRunner==null){
+            if (aaptRunner == null) {
                 verifyOne(aapt, "aapt binary file");
             }
         }
@@ -378,19 +383,22 @@ public class ApkMaker {
         String androidManifest;
         String outputDir;
         String apkName;
+
         public ProjectFiles(ApkMakerOptions options) throws Exception {
             setProjectDir(options.projectDir);
             setOutputDir(options.outputFile);
         }
+
         private String getFilePath(String label, File parent, String fileName) throws Exception {
             File file = new File(parent, fileName);
-            if(!file.exists()){
+            if (!file.exists()) {
                 throw new Exception(label + " does not exist in " + parent.getAbsolutePath());
-            }else{
+            } else {
                 return file.getAbsolutePath();
             }
         }
-        private void setProjectDir(String projectDir)throws Exception{
+
+        private void setProjectDir(String projectDir) throws Exception {
             File projectDirFile = new File(projectDir);
             androidManifest = getFilePath("AndroidManifest.xml", projectDirFile, "AndroidManifest.xml");
             resDir = getFilePath("Directory \"res\"", projectDirFile, "res");
@@ -398,17 +406,19 @@ public class ApkMaker {
             assetsDir = assetsDirFile.exists() ? assetsDirFile.getAbsolutePath() : null;
             javaDir = getFilePath("Directory \"java\"", projectDirFile, "java");
         }
+
         private void setOutputDir(String outputFile) throws Exception {
             File outputFileFile = new File(outputFile);
             File outputDirFile = new File(outputFile).getParentFile();
-            if(!outputDirFile.canWrite()){
+            if (!outputDirFile.canWrite()) {
                 throw new Exception("Cannot write to output directory " + outputDirFile.getAbsolutePath());
             }
             outputDir = outputDirFile.getAbsolutePath();
             apkName = outputFileFile.getName();
         }
     }
-    public interface AaptRunner{
+
+    public interface AaptRunner {
         public boolean runAapt(File androidManifest, File resourcesArsc, File androidJar, File resDir, File genDir, Callbacks callbacks);
     }
 }

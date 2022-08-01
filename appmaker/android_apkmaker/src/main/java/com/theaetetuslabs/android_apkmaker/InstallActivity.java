@@ -54,7 +54,7 @@ public class InstallActivity extends AppCompatActivity {
     AlertDialog tryAgainDialog;
     BuildFiles files;
     public static boolean verbose = true;
-    
+
     static void setNeedStartInstall(boolean needStartInstall) {
         InstallActivity.needStartInstall = needStartInstall;
     }
@@ -63,56 +63,59 @@ public class InstallActivity extends AppCompatActivity {
     static final int INSTALL_REQUEST = 1;
 
 
-    protected void onInstallError(){
+    protected void onInstallError() {
         //Error.  probably caused by TopDogCheck deleting APK before user
         //tried to install it.
-        if(tryAgainDialog!=null) tryAgainDialog.cancel();
+        if (tryAgainDialog != null) tryAgainDialog.cancel();
         new AlertDialog.Builder(this)
                 .setMessage(R.string.retry_install)
                 .setPositiveButton(R.string.retry, (dialog, which) -> moveApk())
                 .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-                    BuildFiles.deleteFiles(files.signed,files.extApk);
+                    BuildFiles.deleteFiles(files.signed, files.extApk);
                     finish();
                 })
                 .setCancelable(false)
                 .show();
     }
-    protected void onInstallSuccess(){
-        if(afterInstallDialog!=null) afterInstallDialog.cancel();
+
+    protected void onInstallSuccess() {
+        if (afterInstallDialog != null) afterInstallDialog.cancel();
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(getStringReplacing(R.string.installed, "{{appName}}", AndroidApkMaker.newAppName))
                 .setPositiveButton(getString(R.string.open), (dialog, which) -> {
                     Intent intent = getPackageManager().getLaunchIntentForPackage(AndroidApkMaker.newAppPackage);
-                    if(intent!=null){
+                    if (intent != null) {
                         startActivity(intent);
                         finish();
                     }
                 })
                 .setNegativeButton(R.string.done, (dialog, which) -> finish())
                 .setCancelable(false);
-        if(AndroidApkMaker.adder!=null){
+        if (AndroidApkMaker.adder != null) {
             AndroidApkMaker.adder.addToAfterInstallDialog(builder, this);
         }
         afterInstallDialog = builder.show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Logger.logd("ResultCode: " + resultCode + "; requestCode: " + requestCode, verbose, System.out);
-        if(requestCode == INSTALL_REQUEST) {
+        if (requestCode == INSTALL_REQUEST) {
             BuildFiles.deleteFiles(files.extApk);
-            if(resultCode!=1){
+            if (resultCode != 1) {
                 BuildFiles.deleteFiles(files.signed);
             }
-            if(resultCode == 1){
+            if (resultCode == 1) {
                 onInstallError();
-            }else if(resultCode == -1){
+            } else if (resultCode == -1) {
                 onInstallSuccess();
-            }else{
+            } else {
                 finish();
             }
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,48 +128,50 @@ public class InstallActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(afterInstallDialog!=null) afterInstallDialog.cancel();
-        if(tryAgainDialog!=null) tryAgainDialog.cancel();
+        if (afterInstallDialog != null) afterInstallDialog.cancel();
+        if (tryAgainDialog != null) tryAgainDialog.cancel();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Logger.logd("InstallActivity#onResume. signed path: " + files.signed.getAbsolutePath(), verbose, System.out);
-        if(needStartInstall){
+        if (needStartInstall) {
             SideLoadChecker slc = new SideLoadChecker(this);
 
-            if(!files.signed.exists()){
+            if (!files.signed.exists()) {
                 finish();
                 return;
             }
-            if(!slc.canSideLoad()) {
+            if (!slc.canSideLoad()) {
                 slc.requestSideLoad();
                 return;
             }
             needStartInstall = false;
-            if(Build.VERSION.SDK_INT >= 24){
+            if (Build.VERSION.SDK_INT >= 24) {
                 //can install from uri: 24
                 //cannot install from uri: 23, 22, 19 or 16
                 tryInstallInternal();
-            }else{
+            } else {
                 Timer timer = new Timer();
                 timer.schedule(new TopDogCheck(timer, this), 100);
                 moveApk();
             }
         }
     }
-    private String getStringReplacing(int id, String oldStr, String newStr){
+
+    private String getStringReplacing(int id, String oldStr, String newStr) {
         return getString(id).replace(oldStr, newStr);
     }
 
-    private Intent getInstallIntent(){
+    private Intent getInstallIntent() {
         Intent promptInstall = new Intent(Intent.ACTION_INSTALL_PACKAGE);
         promptInstall.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         promptInstall.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
         promptInstall.putExtra(Intent.EXTRA_RETURN_RESULT, true);
         return promptInstall;
     }
+
     private void tryInstallInternal() {
         Log.d("TAG", "signed exists? " + files.signed.exists() + ", " + files.signed.getAbsolutePath());
 //        System.out.println(BuildConfig.APPLICATION_ID + ".apkmakerfileprovider");
@@ -177,28 +182,31 @@ public class InstallActivity extends AppCompatActivity {
         List<ResolveInfo> list =
                 getPackageManager().queryIntentActivities(promptInstall,
                         PackageManager.MATCH_DEFAULT_ONLY);
-        if(list.size() > 0) {
+        if (list.size() > 0) {
             startActivityForResult(promptInstall, INSTALL_REQUEST);
             Log.d("TAG", "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Handled content URI");
         }
 
     }
-    private void tryExternalInstall(){
+
+    private void tryExternalInstall() {
         Log.d("TAG", "extApk exits? " + files.extApk.exists() + ", " + files.extApk.getAbsolutePath());
-        if(files.extApk.exists()) {
+        if (files.extApk.exists()) {
             Intent promptInstall = getInstallIntent();
             Log.d("TAG", "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^NO NO NO NO NOT Handled content URI");
             promptInstall.setData(Uri.fromFile(files.extApk));
             startActivityForResult(promptInstall, INSTALL_REQUEST);
         }
     }
-    private void moveApk(){
-        if(moveApkTask==null){
+
+    private void moveApk() {
+        if (moveApkTask == null) {
             moveApkTask = new MoveApkTask();
             moveApkTask.execute();
         }
     }
-    private class MoveApkTask extends AsyncTask<Void, Void, Boolean>{
+
+    private class MoveApkTask extends AsyncTask<Void, Void, Boolean> {
         void copy(File src, File dst) throws IOException {
             if (!dst.exists()) {
                 dst.createNewFile();
@@ -215,6 +223,7 @@ public class InstallActivity extends AppCompatActivity {
             in.close();
             out.close();
         }
+
         @Override
         protected Boolean doInBackground(Void... params) {
             BuildFiles files = new BuildFiles(InstallActivity.this);
@@ -230,99 +239,107 @@ public class InstallActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean copySucceeded) {
             super.onPostExecute(copySucceeded);
-            if(copySucceeded){
+            if (copySucceeded) {
                 tryExternalInstall();
-            }else{
+            } else {
                 BuildFiles.deleteFiles(files.extApk);
             }
             moveApkTask = null;
         }
     }
 
-    public static class SideLoadChecker{
+    public static class SideLoadChecker {
         private Context context;
-        public SideLoadChecker(Context context){
+
+        public SideLoadChecker(Context context) {
             this.context = context;
         }
-        public void check(){
-            if(canSideLoad()){
+
+        public void check() {
+            if (canSideLoad()) {
                 return;
-            }else{
+            } else {
                 requestSideLoad();
             }
         }
-        public boolean canSideLoad(){
+
+        public boolean canSideLoad() {
             try {
                 int installNonMarketApps = Secure.getInt(context.getContentResolver(), Secure.INSTALL_NON_MARKET_APPS);
-                Logger.logd( "installNonMarketApps: " + installNonMarketApps, verbose, System.out);
-                return 1== installNonMarketApps;
+                Logger.logd("installNonMarketApps: " + installNonMarketApps, verbose, System.out);
+                return 1 == installNonMarketApps;
             } catch (SettingNotFoundException e) {
                 e.printStackTrace();
             }
             return true;
         }
-        public void requestSideLoad(){
+
+        public void requestSideLoad() {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle(R.string.unknown_sources_title);
             builder.setMessage(R.string.unknown_sources_text);
-            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            });
 
             builder.setPositiveButton(android.R.string.ok, (dialog, which) -> context.startActivity(new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS)));
             builder.show();
         }
     }
 
-    public static boolean canAccessStorage(Context context){
+    public static boolean canAccessStorage(Context context) {
         BuildFiles files = new BuildFiles(context);
-        if(files.extApk.exists()){
+        if (files.extApk.exists()) {
             files.extApk.delete();
         }
-        try{
+        try {
             files.extApk.createNewFile();
             files.extApk.delete();
             return true;
         } catch (IOException e) {
-            Logger.logd( files.extApk.getAbsolutePath(), verbose, System.out);
+            Logger.logd(files.extApk.getAbsolutePath(), verbose, System.out);
             return false;
         }
     }
-    public static boolean hasEnoughSpace(Context context){
+
+    public static boolean hasEnoughSpace(Context context) {
         BuildFiles files = new BuildFiles(context);
         try {
             files.extApk.createNewFile();
             long free = files.extApk.getFreeSpace();
-            Logger.logd( "freespace: " + free, verbose, System.out);
-            return free/1024 > 5;
+            Logger.logd("freespace: " + free, verbose, System.out);
+            return free / 1024 > 5;
         } catch (IOException e) {
             return false;
         }
     }
-    
+
     static class TopDogCheck extends TimerTask {
         Timer timer;
         WeakReference<Activity> activityRef;
         int myTaskId;
         private static int interval = 1000;
         BuildFiles files;
-        TopDogCheck(Timer timer, Activity activity){
+
+        TopDogCheck(Timer timer, Activity activity) {
             files = new BuildFiles(activity);
             this.timer = timer;
             activityRef = new WeakReference<Activity>(activity);
             ActivityManager activityManager = (ActivityManager) activity.getBaseContext().getSystemService(Activity.ACTIVITY_SERVICE);
-            List<RunningTaskInfo> list = activityManager.getRunningTasks (1);
+            List<RunningTaskInfo> list = activityManager.getRunningTasks(1);
             myTaskId = list.get(0).id;
             Logger.logd("Self check started. Task id: " + myTaskId, verbose, System.out);
         }
-        private TopDogCheck(Timer timer, Activity activity, int myTaskId){
+
+        private TopDogCheck(Timer timer, Activity activity, int myTaskId) {
             files = new BuildFiles(activity);
             this.timer = timer;
             this.myTaskId = myTaskId;
-            activityRef = new WeakReference<Activity>(activity);
+            activityRef = new WeakReference<>(activity);
             ActivityManager activityManager = (ActivityManager) activity.getBaseContext().getSystemService(Activity.ACTIVITY_SERVICE);
-            List<ActivityManager.RunningTaskInfo> list = activityManager.getRunningTasks (1);
+            List<ActivityManager.RunningTaskInfo> list = activityManager.getRunningTasks(1);
             int topTaskId = list.get(0).id;
             Logger.logd("Still top dog: " + (myTaskId == topTaskId), verbose, System.out);
-            if(myTaskId != topTaskId){
+            if (myTaskId != topTaskId) {
                 files.deleteFiles(files.extApk);
                 activityRef.clear();
             }
@@ -331,8 +348,8 @@ public class InstallActivity extends AppCompatActivity {
         @Override
         public void run() {
             Activity activity = activityRef.get();
-            if(activity!=null) {
-                if(files.extApk.exists()) {
+            if (activity != null) {
+                if (files.extApk.exists()) {
                     timer.schedule(new TopDogCheck(timer, activity, myTaskId), interval);
                     timer = null;
                 }
