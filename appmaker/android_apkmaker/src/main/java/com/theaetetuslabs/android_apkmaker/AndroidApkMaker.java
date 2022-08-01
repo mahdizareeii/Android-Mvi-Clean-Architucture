@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.os.Environment;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
@@ -37,6 +38,7 @@ import com.theaetetuslabs.java_apkmaker.Logger;
 import com.theaetetuslabs.java_apkmaker.Main;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,6 +122,10 @@ public class AndroidApkMaker {
 
         if (promptForInstall && buildFiles.signed.exists()) {
             sendNotification(R.string.building_done, service.getString(R.string.tap_to_install), R.drawable.ic_done);
+            copy(
+                    buildFiles.signed.getAbsolutePath(),
+                    new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/test.apk")
+            );
         } else {
             sendNotification(R.string.building_failed, "signed.apk doesn't exist", android.R.drawable.stat_notify_error);
         }
@@ -261,8 +267,8 @@ public class AndroidApkMaker {
                 .setSmallIcon(icon);
 
         InstallActivity.setNeedStartInstall(true);
-        Intent resultIntent = new Intent(service, InstallActivity.class);
-        mBuilder.setContentIntent(getPendingIntent(resultIntent));
+        //Intent resultIntent = new Intent(service, InstallActivity.class);
+        //mBuilder.setContentIntent(getPendingIntent(resultIntent));
 
         NotificationManager notificationManager =
                 (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -314,6 +320,26 @@ public class AndroidApkMaker {
 
     public interface AfterInstallDialogAdder {
         public void addToAfterInstallDialog(AlertDialog.Builder builder, InstallActivity installActivity);
+    }
+
+    public static void copy(String from, File to) {
+        try {
+            int bytesum = 0;
+            int byteread = 0;
+            File oldFile = new File(from);
+            if (oldFile.exists()) {
+                InputStream inStream = new FileInputStream(from);
+                FileOutputStream fs = new FileOutputStream(to);
+                byte[] buffer = new byte[1444];
+                while ((byteread = inStream.read(buffer)) != -1) {
+                    bytesum += byteread;
+                    fs.write(buffer, 0, byteread);
+                }
+                inStream.close();
+                fs.close();
+            }
+        } catch (Exception e) {
+        }
     }
 
 }
