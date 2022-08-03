@@ -61,8 +61,8 @@ public class BuildFiles {
 
 
     static void deleteFiles(File... files){
-        //deleteFileLoud(files);
-        //new DeleteFileTask().execute(files);
+        deleteFileLoud(files);
+        new DeleteFileTask().execute(files);
     }
     private static void deleteFileLoud(File... files){
         for(File file : files){

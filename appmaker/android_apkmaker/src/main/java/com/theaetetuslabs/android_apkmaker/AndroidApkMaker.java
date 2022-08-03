@@ -122,13 +122,18 @@ public class AndroidApkMaker {
 
         if (promptForInstall && buildFiles.signed.exists()) {
             sendNotification(R.string.building_done, service.getString(R.string.tap_to_install), R.drawable.ic_done);
-            copy(
-                    buildFiles.signed.getAbsolutePath(),
-                    new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/test.apk")
-            );
+            copyApkFileInDocuments();
         } else {
             sendNotification(R.string.building_failed, "signed.apk doesn't exist", android.R.drawable.stat_notify_error);
         }
+    }
+
+    private void copyApkFileInDocuments() {
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).mkdirs();
+        copy(
+                buildFiles.signed.getAbsolutePath(),
+                new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/test.apk")
+        );
     }
 
     private static File unpackAsset(Context context, String assetName, File dest) throws IOException {
@@ -152,7 +157,6 @@ public class AndroidApkMaker {
         if (!aapt.exists()) {
             String aaptToUse = null;
             boolean usePie = VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN;
-            String abi;
             if (VERSION.SDK_INT > VERSION_CODES.LOLLIPOP) {
                 String[] abis = Build.SUPPORTED_32_BIT_ABIS;
                 for (String mAbi : abis) {

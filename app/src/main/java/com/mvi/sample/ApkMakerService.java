@@ -24,7 +24,7 @@ import java.util.zip.ZipInputStream;
 
 public class ApkMakerService extends IntentService {
 
-    private String notificationChannel = "serviceChannelId";
+    private final String notificationChannel = "serviceChannelId";
     /*
     For testing android_apkmaker.  Included in the assests directory of this project is a test.zip file.
     You may replace it with your own, as you see fit.  test.zip should include an AndroidManifest.xml,
@@ -80,13 +80,14 @@ public class ApkMakerService extends IntentService {
         new AndroidApkMaker(
                 this,
                 mNotifyManager,
-                mBuilder)
-                .make(
-                        "test apk",
-                        APP_PACKAGE_NAME,
-                        projectDir.getAbsolutePath(),
-                        /*verbose */ true,
-                        adder);
+                mBuilder
+        ).make(
+                "test apk",
+                APP_PACKAGE_NAME,
+                projectDir.getAbsolutePath(),
+                true,
+                adder
+        );
     }
 
     public static void moveAsset(Context context, String assetName, File destDir) throws IOException {
