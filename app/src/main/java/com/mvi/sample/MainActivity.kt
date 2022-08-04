@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun buildAndInstall() {
         val intent = Intent(this, ApkMakerService::class.java)
+        intent.putExtra("project_package_name","com.theaetetuslabs.helloworld")
         startService(intent)
     }
 }

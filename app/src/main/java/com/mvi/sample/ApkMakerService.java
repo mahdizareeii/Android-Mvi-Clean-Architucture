@@ -25,13 +25,6 @@ import java.util.zip.ZipInputStream;
 public class ApkMakerService extends IntentService {
 
     private final String notificationChannel = "serviceChannelId";
-    /*
-    For testing android_apkmaker.  Included in the assests directory of this project is a test.zip file.
-    You may replace it with your own, as you see fit.  test.zip should include an AndroidManifest.xml,
-    a res directory, a java directory, and (optionally) an assets directory.
-    APP_PACKAGE_NAME should be set to the package name specified in the AndroidManifest.xml in test.zip.
-     */
-    public static final String APP_PACKAGE_NAME = "com.theaetetuslabs.helloworld";
 
     public static final String TAG = "ApkMakerService";
 
@@ -77,13 +70,18 @@ public class ApkMakerService extends IntentService {
 
         AndroidApkMaker.AfterInstallDialogAdder adder = (builder, installActivity) -> builder.setMessage(R.string.app_name);
 
+        String projectPackageName = intent.getStringExtra("project_package_name");
+
+        if (projectPackageName == null || projectPackageName.isEmpty())
+            throw new IllegalStateException("You must pass project package name into service");
+
         new AndroidApkMaker(
                 this,
                 mNotifyManager,
                 mBuilder
         ).make(
                 "test apk",
-                APP_PACKAGE_NAME,
+                projectPackageName,
                 projectDir.getAbsolutePath(),
                 true,
                 adder
