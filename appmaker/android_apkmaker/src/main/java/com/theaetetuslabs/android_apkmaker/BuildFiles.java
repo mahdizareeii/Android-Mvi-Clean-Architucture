@@ -44,9 +44,9 @@ public class BuildFiles {
         return dir;
     }
     BuildFiles(Context context){
-        extFileDir = context.getExternalFilesDir(null);
+        extFileDir = context.getCacheDir();
         extApk = new File(extFileDir, "extApk.apk");
-        filesDir = context.getFilesDir();
+        filesDir = context.getCacheDir();
         buildDir = initDir(filesDir, "buildStuff");
         apks = initDir(buildDir, "apks");
         signed = new File(apks, "signed.apk");

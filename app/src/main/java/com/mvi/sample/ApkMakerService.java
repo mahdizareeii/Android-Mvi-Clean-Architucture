@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -58,7 +59,7 @@ public class ApkMakerService extends IntentService {
         notificationManager.notify(notificationId, notification);
         startForeground(AndroidApkMaker.ONGOING_NOTIFICATION_ID, notification);
 
-        File filesDir = getFilesDir();
+        File filesDir = getCacheDir();
         try {
             moveAsset(this, "test.zip", filesDir);
         } catch (IOException e) {
